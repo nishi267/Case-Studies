@@ -1,0 +1,12 @@
+https://huggingface.co/transformers/model_doc/bart.html
+https://github.com/pytorch/fairseq/tree/master/examples/bart
+https://medium.com/analytics-vidhya/revealing-bart-a-denoising-objective-for-pretraining-c6e8f8009564
+https://towardsdatascience.com/teaching-bart-to-rap-fine-tuning-hugging-faces-bart-model-41749d38f3ef
+https://github.com/pytorch/fairseq/blob/master/examples/bart/README.md
+https://www.analyticsvidhya.com/blog/2020/11/summarize-twitter-live-data-using-pretrained-nlp-models/
+https://www.kaggle.com/areomoon/text-summarization-with-bart-inference
+https://www.kaggle.com/kashnitsky/bart-first-try-pretrained-not-finetuned\
+
+text sumrization
+question anserwing
+https://meet.google.com/linkredirect?authuser=0&dest=https%3A%2F%2Fwww.codecogs.com%2Flatex%2Feqneditor.php
