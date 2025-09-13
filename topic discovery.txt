@@ -1,0 +1,58 @@
+# !pip install sentence-transformers bertopic hdbscan umap-learn pandas
+
+import pandas as pd
+from sentence_transformers import SentenceTransformer
+from bertopic import BERTopic
+
+# ---------------------------------
+# Step 1: Load dataset
+# ---------------------------------
+# Expecting: transcript + primary_driver columns
+df = pd.read_csv("call_transcripts.csv")
+
+# ---------------------------------
+# Step 2: Embedding model
+# ---------------------------------
+embedder = SentenceTransformer("all-MiniLM-L6-v2")  # good trade-off between speed/quality
+
+# ---------------------------------
+# Step 3: Loop through each primary driver
+# ---------------------------------
+results = {}
+
+for driver in df['primary_driver'].unique():
+    subset = df[df['primary_driver'] == driver]
+    
+    # Encode transcripts
+    embeddings = embedder.encode(subset['transcript'], show_progress_bar=True)
+    
+    # Create BERTopic model for sub-driver discovery
+    topic_model = BERTopic(
+        embedding_model=embedder,
+        min_topic_size=10,   # adjust based on how granular you want sub-drivers
+        verbose=False
+    )
+    
+    topics, probs = topic_model.fit_transform(subset['transcript'], embeddings)
+    subset['sub_driver'] = topics
+    
+    # Store model & results
+    results[driver] = {
+        "data": subset,
+        "model": topic_model
+    }
+
+# ---------------------------------
+# Step 4: View discovered sub-drivers & diagnosis keywords
+# ---------------------------------
+for driver, r in results.items():
+    print(f"\n=== {driver} ===")
+    
+    # Sub-driver info
+    print(r["model"].get_topic_info().head())
+    
+    # Diagnosis categories = keywords per cluster
+    for topic_id in r["model"].get_topic_info().Topic:
+        if topic_id != -1:  # skip noise
+            print(f"\nSub-driver {topic_id}")
+            print("Keywords / Diagnosis phrases:", r["model"].get_topic(topic_id))
